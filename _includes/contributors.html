@@ -1,0 +1,100 @@
+<div id="contributors-list" class="contributor-avatars">
+    <div id="loading-indicator">Loading contributors...</div>
+</div>
+
+<script>
+    async function fetchContributors(repo) {
+        if (!repo || typeof repo !== 'string' || !repo.includes('/')) {
+            console.error(`Invalid repository format: ${repo}`);
+            return [];
+        }
+        try {
+            const response = await fetch(`https://api.github.com/repos/${repo}/contributors`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error(`Error fetching contributors for ${repo}:`, error);
+            return [];
+        }
+    }
+
+    async function displayContributors() {
+        const containerEl = document.getElementById('contributors-list');
+        const loadingEl = document.getElementById('loading-indicator');
+        const repos = [
+            '{{ site.repository | default: "Sunrisepeak/d2ds" }}'
+        ].filter(Boolean).concat({{ site.additional_repos | default: '[]' | jsonify }});
+
+        const allContributors = new Map();
+
+        for (const repo of repos) {
+            console.log(`Fetching contributors for ${repo}`);
+            const contributors = await fetchContributors(repo);
+            if (Array.isArray(contributors)) {
+                contributors.forEach(contributor => {
+                    if (!allContributors.has(contributor.id)) {
+                        allContributors.set(contributor.id, contributor);
+                    }
+                });
+            } else {
+                console.error(`Unexpected response for ${repo}:`, contributors);
+            }
+        }
+
+        loadingEl.style.display = 'none';
+
+        if (allContributors.size === 0) {
+            containerEl.textContent = 'No contributors found or network reqeust error.';
+            return;
+        }
+
+        allContributors.forEach(contributor => {
+            const linkEl = document.createElement('a');
+            linkEl.href = contributor.html_url;
+            linkEl.target = '_blank';
+            linkEl.rel = 'noopener noreferrer';
+
+            const avatarEl = document.createElement('img');
+            avatarEl.src = contributor.avatar_url;
+            avatarEl.alt = contributor.login;
+            avatarEl.title = contributor.login;
+
+            const avatarSize = 40;
+
+            avatarEl.width = avatarSize;
+            avatarEl.height = avatarSize;
+
+            linkEl.appendChild(avatarEl);
+            containerEl.appendChild(linkEl);
+        });
+    }
+
+    displayContributors().catch(error => {
+        console.error('Failed to display contributors:', error);
+        document.getElementById('loading-indicator').textContent = 'Failed to load contributors.';
+    });
+</script>
+
+<style>
+    .contributor-avatars {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .contributor-avatars img {
+        border-radius: 50%;
+        transition: transform 0.2s;
+    }
+
+    .contributor-avatars img:hover {
+        transform: scale(1.1);
+    }
+
+    #loading-indicator {
+        text-align: center;
+        padding: 20px;
+    }
+</style>

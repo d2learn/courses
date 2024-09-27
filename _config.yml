@@ -1,0 +1,60 @@
+title: D2Learn公开课
+description: d2learn开源社区公开课
+theme: just-the-docs
+url: https://github.com/d2learn
+repository: Sunrisepeak/d2ds # for github-metadata
+# github: [metadata]
+
+additional_repos:
+  - d2learn/xlings
+  - d2learn/courses
+  - d2learn/docs
+  - d2learn/d2ds
+  - d2learn/d2python
+  - d2learn/d2cpp
+
+logo: "assets/images/d2learn-opencourses-logo.png"
+favicon_ico: "/assets/images/d2learn-logo.png"
+
+aux_links:
+  社区文档: https://d2learn.github.io/docs
+  xlings工具: "https://github.com/d2learn/xlings"
+  Github: https://github.com/d2learn
+
+# Makes Aux links open in a new tab. Default is false
+# Optional: You can also customize the appearance of these links
+#aux_links_new_tab: true  # Opens links in new tabs
+#nav_external_links:
+#  - title: 社区文档
+#    url: https://d2learn.github.io/docs
+#  - title: xlings工具
+#    url: https://github.com/d2learn/xlings
+#  - title: Github
+#    url: https://github.com/d2learn
+
+exclude: ["Gemfile.lock"]
+
+# Collections for website data
+collections:
+  announcements:
+
+# Default layouts for each collection type
+defaults:
+  - scope:
+      path: ''
+      type: announcements
+    values:
+      layout: announcement
+
+# Footer "Edit this page on GitHub" link text
+gh_edit_link: true # show or hide edit this page link
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/Sunrisepeak/d2ds-courses" # the github URL for your repo
+gh_edit_branch: "main" # the branch that your docs is served from
+gh_edit_source: website # the source that your files originate from
+gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into the editor immediately
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-github-metadata
+  - jekyll-include-cache
