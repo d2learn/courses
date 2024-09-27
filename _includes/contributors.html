@@ -3,6 +3,37 @@
 </div>
 
 <script>
+    class ContributorsCache {
+        constructor(cacheDurationMs = 60 * 60 * 1000) {
+            this.cacheDurationMs = cacheDurationMs;
+        }
+
+        getKey(repo) {
+            return `contributors_${repo}`;
+        }
+
+        get(repo) {
+            const key = this.getKey(repo);
+            const cachedData = localStorage.getItem(key);
+            if (cachedData) {
+                const { timestamp, data } = JSON.parse(cachedData);
+                if (Date.now() - timestamp < this.cacheDurationMs) {
+                    return data;
+                }
+            }
+            return null;
+        }
+
+        set(repo, data) {
+            const key = this.getKey(repo);
+            const cacheObject = {
+                timestamp: Date.now(),
+                data: data
+            };
+            localStorage.setItem(key, JSON.stringify(cacheObject));
+        }
+    }
+
     async function fetchContributors(repo) {
         if (!repo || typeof repo !== 'string' || !repo.includes('/')) {
             console.error(`Invalid repository format: ${repo}`);
@@ -10,9 +41,18 @@
         }
         try {
             const response = await fetch(`https://api.github.com/repos/${repo}/contributors`);
+
+            const rateLimit = {
+                limit: response.headers.get('X-RateLimit-Limit'),
+                remaining: response.headers.get('X-RateLimit-Remaining'),
+                reset: new Date(response.headers.get('X-RateLimit-Reset') * 1000)
+            };
+            console.log(`Rate limit for ${repo}:`, rateLimit);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+
             return await response.json();
         } catch (error) {
             console.error(`Error fetching contributors for ${repo}:`, error);
@@ -28,10 +68,18 @@
         ].filter(Boolean).concat({{ site.additional_repos | default: '[]' | jsonify }});
 
         const allContributors = new Map();
+        const cache = new ContributorsCache();
 
         for (const repo of repos) {
-            console.log(`Fetching contributors for ${repo}`);
-            const contributors = await fetchContributors(repo);
+            let contributors = cache.get(repo);
+            if (Array.isArray(contributors) && contributors.length > 0) {
+                console.log(`Using cached data for ${repo}`);
+            } else {
+                console.log(`Fetching contributors for ${repo}`);
+                contributors = await fetchContributors(repo);
+                cache.set(repo, contributors);
+            }
+
             if (Array.isArray(contributors)) {
                 contributors.forEach(contributor => {
                     if (!allContributors.has(contributor.id)) {
@@ -46,7 +94,7 @@
         loadingEl.style.display = 'none';
 
         if (allContributors.size === 0) {
-            containerEl.textContent = 'No contributors found or network reqeust error.';
+            containerEl.textContent = 'request github contributors failed....';
             return;
         }
 
