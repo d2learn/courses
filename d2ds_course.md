@@ -84,3 +84,15 @@ nav_order: 2
 - [xmake](https://github.com/xmake-io/xmake)
 - [mdbook](https://github.com/rust-lang/mdBook)
 - [just-the-docs](https://github.com/just-the-docs/just-the-docs)
+
+---
+
+<div class="comments">
+    <script src="https://utteranc.es/client.js"
+        repo="d2learn/d2ds"
+        issue-number="1"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+    </script>
+</div>

@@ -13,6 +13,10 @@ additional_repos:
   - d2learn/d2python
   - d2learn/d2cpp
 
+comments_repo: "d2learn/courses"
+
+# ------------------------------
+
 logo: "assets/images/d2learn-opencourses-logo.png"
 favicon_ico: "/assets/images/d2learn-logo.png"
 

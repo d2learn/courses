@@ -47,3 +47,15 @@ nav_order: 1
 - 修复项目Bug, 完善项目文档
 - 参与新功能和新模块的开发
 - 创建新的**类d2x**项目
+
+---
+
+<div class="comments">
+    <script src="https://utteranc.es/client.js"
+        repo="d2learn/courses"
+        issue-number="1"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+    </script>
+</div>
