@@ -21,6 +21,7 @@ logo: "assets/images/d2learn-opencourses-logo.png"
 favicon_ico: "/assets/images/d2learn-logo.png"
 
 aux_links:
+  社区论坛: https://forum.d2learn.org
   社区文档: https://d2learn.github.io/docs
   xlings工具: "https://github.com/d2learn/xlings"
   Github: https://github.com/d2learn
