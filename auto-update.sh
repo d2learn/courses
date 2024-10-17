@@ -15,6 +15,6 @@ cd $SCRIPT_DIR
 git pull origin main
 
 #bundle install --verbose
-bundle exec jekyll build
+#bundle exec jekyll build
 
 # dont modify this file
